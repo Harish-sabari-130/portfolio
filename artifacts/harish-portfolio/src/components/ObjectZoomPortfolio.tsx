@@ -301,16 +301,25 @@ export default function ObjectZoomPortfolio() {
       {/* ── Sleek Brand Capsule (Top-Left) ── */}
       <div
         onClick={() => goToSection(0)}
-        className="fixed top-4 left-4 sm:top-5 sm:left-6 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-slate-900/60 hover:bg-slate-900/80 hover:border-sky-400/40 backdrop-blur-xl shadow-[0_4px_16px_rgba(0,0,0,0.35)] transition-all cursor-pointer group select-none"
-        title="Return to Overview"
+        className="fixed top-4 left-4 sm:top-5 sm:left-6 z-30 flex items-center gap-2.5 px-3 py-1.5 rounded-full border border-amber-400/30 bg-slate-950/80 hover:bg-slate-900/90 hover:border-amber-400/60 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.5),0_0_15px_rgba(212,175,55,0.15)] transition-all duration-300 cursor-pointer group select-none"
+        title="Harish Sabari's AI Nexus — Return to Overview"
         data-interactive="true"
       >
-        <div className="w-5 h-5 rounded-full border border-sky-400/50 bg-sky-500/20 flex items-center justify-center text-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.3)]">
-          <Cpu size={11} />
+        <div className="relative w-6 h-6 rounded-full overflow-hidden border border-amber-400/60 shadow-[0_0_10px_rgba(212,175,55,0.4)] group-hover:scale-105 transition-transform shrink-0">
+          <img
+            src="/hs-emblem.png"
+            alt="Harish Sabari HS Emblem"
+            className="w-full h-full object-cover"
+          />
         </div>
-        <span className="text-xs font-semibold tracking-wider text-slate-100 group-hover:text-sky-300 transition-colors">
-          HARISH SABARI
-        </span>
+        <div className="flex flex-col">
+          <span className="text-xs font-bold tracking-wider text-slate-100 group-hover:text-amber-200 transition-colors leading-tight">
+            HARISH SABARI<span className="text-amber-400 font-serif">'S</span>
+          </span>
+          <span className="text-[9px] font-mono tracking-widest text-sky-400/90 group-hover:text-sky-300 leading-tight">
+            AI NEXUS
+          </span>
+        </div>
       </div>
 
       {/* ── Floating Navigation Capsule Dock (Top-Center) ── */}

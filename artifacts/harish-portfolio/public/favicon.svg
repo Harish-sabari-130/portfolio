@@ -1,3 +1,30 @@
-<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="goldGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe8a3" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#050811" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe89a"/>
+      <stop offset="50%" stop-color="#c59b27"/>
+      <stop offset="100%" stop-color="#fef0cd"/>
+    </linearGradient>
+    <linearGradient id="goldSilver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#e2e8f0"/>
+      <stop offset="65%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#996515"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="128" fill="#050811"/>
+  <circle cx="256" cy="256" r="236" fill="url(#goldGlow)"/>
+  <circle cx="256" cy="256" r="226" fill="none" stroke="url(#goldRing)" stroke-width="16" filter="url(#glow)"/>
+  <text x="256" y="328" font-family="'Cinzel', 'Playfair Display', 'Georgia', serif" font-size="230" font-weight="900" fill="url(#goldSilver)" text-anchor="middle" letter-spacing="-6" filter="url(#glow)">HS</text>
 </svg>
