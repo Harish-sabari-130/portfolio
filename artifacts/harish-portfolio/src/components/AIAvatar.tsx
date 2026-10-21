@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Minus, ChevronDown } from 'lucide-react';
+import { X, Send, Minus, ChevronDown, Volume2, VolumeX, RotateCcw, Sparkles } from 'lucide-react';
 
 interface Message {
   role: 'ai' | 'user';
@@ -10,175 +10,144 @@ interface Message {
 
 const RESPONSES: Record<string, string[]> = {
   saha: [
-    "I'm Saha — Harish Sabari's AI companion built into this portfolio. I can answer anything about his skills, projects, experience, and more. What would you like to know?",
-    "Saha here! I'm the AI assistant embedded in this portfolio. Think of me as Harish Sabari's digital spokesperson — I know everything about his work. Ask away!",
-    "I'm Saha, an AI companion created for this portfolio. I can tell you about Harish Sabari's tech stack, projects, certifications, or how to reach him. What are you curious about?",
+    "I'm Saha — Harish Sabari's AI companion built into this portfolio. I can answer anything about his skills, projects (such as Multi-Agent RAG and AI Call Intelligence), ServiceNow internship, or background. What would you like to explore?",
+    "Saha here! I'm the AI assistant embedded in this portfolio. I know all about Harish Sabari's work in Multi-Agent RAG, YOLOv8 vision, audio AI, and full-stack development. Ask away!",
+    "Hello! I am Saha. I can provide details on Harish's technical capabilities, projects (like DEA Clinical Decision Support, AI Call Intelligence, and Real-Time YOLO Detection), ServiceNow internship, or how to reach him directly.",
   ],
   greeting: [
     "Hey! I'm Saha — Harish Sabari's AI companion. What would you like to know about him?",
-    "Hello! Saha here. I can walk you through Harish Sabari's work, skills, and experience. What are you curious about?",
-    "Hi there! Ask me anything about Harish Sabari — his projects, skills, experience, or how to get in touch.",
+    "Hello! Saha here. I can walk you through Harish Sabari's work, AI projects, tech stack, and background. What are you curious about?",
+    "Hi there! Ask me anything about Harish Sabari — his projects, skills, education, or how to get in touch.",
   ],
   skills: [
-    "Harish Sabari's core stack: Languages — Java, Python, C. ML/AI — TensorFlow, Scikit-Learn, OpenCV, NumPy, Pandas. Full Stack — React, Node.js, Express.js, MongoDB, MySQL. Tools — Git, Jupyter Notebook, ServiceNow.",
-    "He codes in Java, Python, and C. For machine learning he uses TensorFlow, Scikit-Learn, OpenCV, NumPy, and Pandas. On the web side it's React, Node.js, Express.js, MongoDB, and MySQL.",
-    "Core strengths: AI/ML (TensorFlow, OpenCV, Scikit-Learn), full-stack web (React + Node.js + Express), and ServiceNow platform development. Python is his main language for AI work.",
+    "Harish Sabari's core stack: Languages — Java, Python. Machine Learning & AI — NumPy, Pandas, Scikit-learn, TensorFlow, OpenCV. Web & Backend — React, Node.js, Express.js, MongoDB. Tools — Git, Google Colab, Jupyter Notebook, ServiceNow.",
+    "He develops primarily in Python and Java. For AI/ML work he leverages TensorFlow, Scikit-learn, and OpenCV for computer vision. On the web side, he builds full-stack applications with React, Node.js, Express.js, and MongoDB.",
+    "Core strengths: Multi-Agent RAG systems, AI audio diarization (Deepgram + LiveKit), computer vision (YOLOv8 + DeepSORT + MiDaS), and ServiceNow enterprise workflow automation.",
   ],
   projects: [
-    "Four key projects: Safina (women safety app — GPS tracking, emergency alerts, AI analysis), Live Vision (real-time YOLO object detection), Nomad Visa Hub (ServiceNow visa management portal), and an AI Expense Tracker Agent. Scroll to Projects for GitHub links.",
-    "His most technical: Live Vision — YOLO-based real-time object detection on live video. Most impactful: Safina — emergency safety platform for women with location tracking. Both are on GitHub.",
-    "Safina and Live Vision are open source on GitHub. Nomad Visa Hub was built on ServiceNow during his internship. The Expense Tracker uses AI agents for automated financial analysis.",
+    "Harish's standout projects: 1) Deterministic Epistemic Arbitration in Multi-Agent RAG (Clinical decision support for resolving conflicting medical guidelines), 2) AI Call Intelligence (Speech-to-text & diarization using Deepgram and LiveKit), 3) Real-Time Object Detection (YOLOv8 + DeepSORT + MiDaS depth), 4) Nomad Visa Hub (ServiceNow RiseUp workflow portal), and 5) Client Web Solution (firstinalltime.in).",
+    "His primary AI research project is Deterministic Epistemic Arbitration (DEA) — specialized RAG agents for clinical, pharmacological, and literature evidence with Ragas evaluation. For computer vision, he built a high-speed YOLOv8 + DeepSORT + MiDaS pipeline. Both are open source on GitHub!",
+    "On GitHub: DEA Multi-Agent RAG (Harish-sabari-130/DEA), AI Call Intelligence (hariharanj-dev/AI-Call-Intelligence), and Real-Time Object Detection (hariharanj-dev/real-time-object-detection). His ServiceNow project is Nomad Visa Hub.",
   ],
   experience: [
-    "Two roles: ServiceNow Developer Intern (Jan–Apr 2026) — built ITSM workflows, Flow Designer automations, and low-code apps. Also freelance web developer with a live client site at firstinalltime.in.",
-    "ServiceNow internship from January to April 2026 — App Engine Studio, Flow Designer, ITSM, AI workflow automation. He also freelanced independently delivering a full client website.",
+    "Harish has hands-on experience as a ServiceNow Developer Intern (RiseUp with ServiceNow Alumni, Jan–Apr 2026), building ITSM workflows, Flow Designer actions, and low-code apps like Nomad Visa Hub. He is also a freelance web developer with a deployed client site at firstinalltime.in.",
+    "ServiceNow internship (Jan–Apr 2026): Platform fundamentals, ITSM, Flow Designer, App Engine Studio, UI Builder, and AI workflow automation. He also freelances, delivering full client production websites.",
   ],
   contact: [
-    "Reach Harish Sabari at harish23alr@gmail.com. He's also on LinkedIn (harish-sabari-130hssh) and GitHub (Harish-sabari-130). Or use the Contact form at the bottom of this page.",
-    "Best way: email harish23alr@gmail.com or connect on LinkedIn. The Contact section below has a direct message form too.",
+    "You can reach Harish Sabari directly via email at harish23alr@gmail.com or call him at +91 9080562629. He's also on LinkedIn (harish-sabari-130hssh), GitHub (Harish-sabari-130), and LeetCode (Harish_sabari).",
+    "The fastest way to reach Harish is emailing harish23alr@gmail.com or calling +91 9080562629. You can also send a direct transmission through the Contact section of this portfolio!",
   ],
   hire: [
-    "Yes — Harish Sabari is actively open to roles in AI/ML engineering and full-stack development. He's drawn to AI-first products and real-world impact. Reach out via the Contact section.",
-    "Open to the right opportunity. He's a B.Tech AIML student building across ML, computer vision, and full-stack — looking for roles where those intersect. Contact section is at the bottom.",
+    "Yes! Harish Sabari is actively seeking opportunities in Software Development and AI Engineering. Feel free to contact him at harish23alr@gmail.com or call +91 9080562629.",
+    "Harish is a B.Tech AIML student (CGPA: 7.77*) looking for challenging roles where practical development experience and analytical problem-solving create real-world product impact.",
   ],
   certifications: [
-    "Two Oracle certifications: Java SE 17 Developer and Oracle APEX Cloud Developer. Both verified — click the cards in the Certifications section to view them directly on Google Drive.",
-    "Harish Sabari is Oracle-certified in Java SE 17 and Oracle APEX Cloud Development. The Certifications section has clickable links to view each one.",
+    "Harish holds two verified Oracle credentials: Oracle Certified Professional Java SE 17 Developer (1Z0-819) and Oracle Certified Associate APEX Cloud Developer (1Z0-770). Both are linked to verified Google Drive credentials in the Certifications section.",
+    "He is Oracle-certified in Java SE 17 Development and Oracle APEX Cloud Development. You can click on the cards in the Certifications section to inspect the verified certificates.",
   ],
   about: [
-    "Harish Sabari P V is a B.Tech AI & Machine Learning student at Kongu Engineering College (2023–2027), Tamil Nadu. He builds AI applications, computer vision systems, and full-stack web apps.",
-    "AI/ML student and developer from Tamil Nadu, India. He's built women-safety platforms, real-time vision systems, ServiceNow apps, and freelance websites. Driven by practical, real-world impact.",
-    "B.Tech AIML at Kongu Engineering College. Passionate about applying AI to real problems — from computer vision pipelines to intelligent workflow automation.",
+    "Harish Sabari P V is a final-year AI & ML student at Kongu Engineering College (2023–2027) with a CGPA of 7.77* and a proud RiseUp with ServiceNow Alumni. He is passionate about exploring AI technologies, experimenting with bold ideas, and continuously learning to build innovative solutions.",
+    "Final-year AIML engineer with proven experience in Multi-Agent RAG, Safina Women Safety app, real-time vision (YOLOv8 + DeepSORT), audio AI communication, and ServiceNow enterprise workflows.",
   ],
   ai: [
-    "His AI focus: computer vision (YOLO, OpenCV), machine learning (TensorFlow, Scikit-Learn, Pandas), and ServiceNow AI workflows. Live Vision is his flagship computer vision project.",
-    "He works with TensorFlow, Scikit-Learn, OpenCV, NumPy, and Pandas. His computer vision project (Live Vision) does real-time YOLO object detection on live video streams.",
+    "Harish's AI engineering work spans Multi-Agent RAG systems (DEA clinical decision support), computer vision (YOLOv8 + DeepSORT + MiDaS), audio communication (Deepgram + LiveKit), and ServiceNow AI workflows.",
   ],
   resume: [
-    "Hit the '[ DOWNLOAD CV ]' button at the top of the page — it opens Harish Sabari's resume directly from Google Drive.",
-    "His resume is linked to the Download CV button in the hero section. One click opens it on Google Drive.",
+    "You can view Harish Sabari's official resume directly on Google Drive: https://drive.google.com/file/d/1-P0qkKw85lUcahaGjvQKtvyJMRBPl7HT/view?usp=sharing or by clicking the 'Resume PDF' button in the Overview section!",
   ],
   default: [
-    "I can tell you about Harish Sabari's skills, projects, experience, certifications, or how to contact him. What would you like to know?",
-    "Good question — try asking about his tech stack, projects, ServiceNow internship, or Oracle certifications. I know it all.",
-    "Ask me about his AI work, full-stack projects, experience, or how to get in touch. I'm here to help.",
+    "I can tell you about Harish Sabari's skills, projects (Multi-Agent RAG, Safina, AI Call Intelligence, YOLOv8), ServiceNow internship, Oracle certifications, or contact info. What would you like to know?",
+    "Ask me about his AI/ML projects (DEA RAG, Safina Women Safety, Deepgram Call Intelligence, YOLOv8), ServiceNow experience, 7.77* CGPA, or how to reach him directly at harish23alr@gmail.com!",
+    "Ask me about his technical stack, education at Kongu Engineering College, live projects, or career objective. I'm here to assist!",
   ],
 };
 
 function getCategory(input: string): string {
   const t = input.toLowerCase().trim();
-
-  // Self-referential / about SAHA itself — check first
-  if (/\b(who are you|what are you|introduce yourself|your name|are you (an )?ai|are you (a )?bot|are you real|tell me about yourself)\b/.test(t)) return 'saha';
+  if (/\b(who are you|what are you|introduce yourself|your name|are you (an )?ai|are you (a )?bot|tell me about yourself)\b/.test(t)) return 'saha';
   if (/\b(saha|your purpose|what can you do|what do you know)\b/.test(t)) return 'saha';
-
-  // Greetings
   if (/^(hi|hello|hey|sup|yo|hii|hola|greetings|howdy)[!?.,\s]*$/.test(t)) return 'greeting';
-  if (/\b(hi there|hello there|hey there)\b/.test(t)) return 'greeting';
-
-  // Resume / CV
-  if (/\b(resume|cv|curriculum|download)\b/.test(t)) return 'resume';
-
-  // Skills / tech stack
-  if (/\b(skill|tech|stack|language|tool|framework|python|java|react|node|tensorflow|opencv|scikit|servicenow)\b/.test(t)) return 'skills';
-
-  // Projects
-  if (/\b(project|safina|live vision|nomad|expense|yolo|github|portfolio|build|demo)\b/.test(t)) return 'projects';
-
-  // Experience / work
-  if (/\b(experience|intern|internship|job|role|company|work|freelance|firstinalltime)\b/.test(t)) return 'experience';
-
-  // Contact
-  if (/\b(contact|email|reach|connect|message|dm|linkedin|gmail)\b/.test(t)) return 'contact';
-
-  // Hiring
-  if (/\b(hire|hiring|available|opportunity|recruit|position|open to work|looking for)\b/.test(t)) return 'hire';
-
-  // Certifications
-  if (/\b(cert|certification|certificate|oracle|apex|java se|verified)\b/.test(t)) return 'certifications';
-
-  // About Harish Sabari
-  if (/\b(about|who is|harish|sabari|person|background|bio|kongu|college|student)\b/.test(t)) return 'about';
-
-  // AI / ML topics
-  if (/\b(ai|ml|machine learning|deep learning|computer vision|neural|model|gpt|llm)\b/.test(t)) return 'ai';
-
+  if (/\b(resume|cv|curriculum|download|pdf)\b/.test(t)) return 'resume';
+  if (/\b(skill|tech|stack|language|tool|framework|python|java|react|node|tensorflow|opencv|scikit|servicenow|mongodb)\b/.test(t)) return 'skills';
+  if (/\b(project|dea|rag|call intelligence|deepgram|livekit|yolo|vision|safina|women safety|nomad|visa|firstinalltime|github|portfolio)\b/.test(t)) return 'projects';
+  if (/\b(experience|intern|internship|servicenow|riseup|freelance|client|firstinalltime)\b/.test(t)) return 'experience';
+  if (/\b(contact|email|phone|call|mobile|reach|connect|linkedin|github|leetcode|gmail)\b/.test(t)) return 'contact';
+  if (/\b(hire|hiring|available|opportunity|recruit|position|job|career|objective)\b/.test(t)) return 'hire';
+  if (/\b(cert|certification|certificate|oracle|apex|java se|1z0)\b/.test(t)) return 'certifications';
+  if (/\b(about|who is|harish|sabari|cgpa|kongu|college|education|school|akv|matric)\b/.test(t)) return 'about';
+  if (/\b(ai|ml|rag|multi-agent|machine learning|deep learning|computer vision|yolo|deepgram|livekit)\b/.test(t)) return 'ai';
   return 'default';
 }
 
 function getReply(input: string): string {
   const category = getCategory(input);
-  const opts = RESPONSES[category];
+  const opts = RESPONSES[category] || RESPONSES['default'];
   return opts[Math.floor(Math.random() * opts.length)];
 }
 
-/* ── SAHA pixel-art avatar ── */
-function SAHAFace({ isActive, isHovered, size = 'md' }: {
-  isActive: boolean;
-  isHovered: boolean;
-  size?: 'sm' | 'md';
-}) {
-  const d = size === 'sm' ? 24 : 76;
+// Lightweight synthesized sound generator (Web Audio API)
+function playCyberChime(type: 'send' | 'receive') {
+  try {
+    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return;
+    const ctx = new AudioContextClass();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
 
+    osc.type = 'sine';
+    if (type === 'send') {
+      osc.frequency.setValueAtTime(440, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.04, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    } else {
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(587.33, ctx.currentTime + 0.18);
+      gain.gain.setValueAtTime(0.05, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+    }
+
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+  } catch {
+    // Audio context not allowed without user gesture or unsupported
+  }
+}
+
+/* ── SAHA Holographic Pixel-Art Portrait ── */
+export function SAHAPortrait({
+  size = 'md',
+  isHovered = false,
+}: {
+  size?: 'sm' | 'md' | 'lg';
+  isHovered?: boolean;
+}) {
+  const dim = size === 'sm' ? 'w-6 h-6' : size === 'lg' ? 'w-14 h-14' : 'w-11 h-11';
   return (
     <div
-      className="relative rounded-full saha-breathe flex-shrink-0 overflow-hidden"
-      style={{
-        width: d,
-        height: d,
-        background: '#05111e',
-        boxShadow: isHovered
-          ? '0 0 0 2px #00d4ff, 0 0 24px rgba(0,212,255,0.8), 0 0 48px rgba(0,212,255,0.3)'
-          : `0 0 0 1.5px rgba(0,212,255,${isActive ? '0.8' : '0.4'}), 0 0 14px rgba(0,212,255,0.25)`,
-        transition: 'box-shadow 0.3s ease',
-      }}
+      className={`relative ${dim} rounded-full overflow-hidden shrink-0 border border-cyan-400/60 bg-[#061224] transition-all duration-300 ${
+        isHovered
+          ? 'shadow-[0_0_20px_rgba(0,212,255,0.85)] border-cyan-300 scale-105'
+          : 'shadow-[0_0_12px_rgba(0,212,255,0.35)]'
+      }`}
     >
+      {/* Pixel Avatar Cropped to Head & Shoulders */}
       <img
         src="/saha-pixel.png"
-        alt="SAHA"
+        alt="Saha AI Avatar"
+        className="absolute left-1/2 -translate-x-1/2 pointer-events-none select-none max-w-none"
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          objectPosition: 'center 5%',
+          width: size === 'sm' ? '210%' : '230%',
+          top: size === 'sm' ? '-10%' : '-12%',
           imageRendering: 'pixelated',
         }}
       />
-      <div className="absolute inset-0 rounded-full pointer-events-none" style={{
-        background: 'linear-gradient(160deg, rgba(0,180,255,0.15) 0%, rgba(0,80,200,0.08) 50%, rgba(100,40,220,0.12) 100%)',
-        mixBlendMode: 'screen',
-      }} />
-      <div className="absolute inset-y-0 left-0 w-[18%] pointer-events-none" style={{
-        background: 'linear-gradient(to right, rgba(0,212,255,0.35), transparent)',
-      }} />
-      <div className="absolute inset-y-0 right-0 w-[18%] pointer-events-none" style={{
-        background: 'linear-gradient(to left, rgba(124,58,237,0.3), transparent)',
-      }} />
-      <div className="absolute bottom-0 left-0 right-0 h-[22%] rounded-b-full pointer-events-none" style={{
-        background: 'linear-gradient(to top, rgba(5,8,22,0.75), transparent)',
-      }} />
-      <div className="absolute inset-0 rounded-full pointer-events-none" style={{
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,212,255,0.04) 2px, rgba(0,212,255,0.04) 3px)',
-        backgroundSize: '100% 4px',
-      }} />
-      <div className="absolute left-0 right-0 h-[1.5px] saha-scanline pointer-events-none" style={{
-        background: 'linear-gradient(90deg, transparent, rgba(0,212,255,0.6), transparent)',
-      }} />
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="48" fill="none"
-          stroke="#00d4ff" strokeWidth="0.8" strokeOpacity="0.4"
-          strokeDasharray="5 3"/>
-      </svg>
-      {size === 'md' && (
-        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full pointer-events-none" style={{
-          background: '#00d4ff',
-          boxShadow: '0 0 6px #00d4ff',
-          opacity: isActive ? 1 : 0.4,
-        }} />
-      )}
+      {/* Holographic cyan wash */}
+      <div className="absolute inset-0 rounded-full pointer-events-none bg-gradient-to-b from-cyan-400/20 via-transparent to-blue-900/40 mix-blend-screen" />
+      {/* Subtle cyber scanlines */}
+      <div className="absolute inset-0 rounded-full pointer-events-none opacity-30 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,212,255,0.25)_2px,rgba(0,212,255,0.25)_3px)]" />
     </div>
   );
 }
@@ -187,18 +156,38 @@ export default function AIAvatar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [showPromptBadge, setShowPromptBadge] = useState(true);
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'ai',
-      content: "Hey — I'm Saha, Harish Sabari's AI companion. Ask me anything about his skills, projects, or experience.",
+      content: "Greetings! I'm Saha, Harish Sabari's AI assistant. Ask me anything about his technical stack, projects, experience, or certifications.",
       timestamp: new Date(),
-    }
+    },
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Prevent wheel events inside chatbox from bubbling to window / 3D canvas
+  useEffect(() => {
+    const modalEl = modalRef.current;
+    if (!modalEl) return;
+
+    const stopWheel = (e: WheelEvent) => {
+      e.stopPropagation();
+    };
+
+    modalEl.addEventListener('wheel', stopWheel, { passive: true });
+    return () => {
+      modalEl.removeEventListener('wheel', stopWheel);
+    };
+  }, [isOpen, isMinimized]);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -211,22 +200,81 @@ export default function AIAvatar() {
   useEffect(() => {
     if (isOpen && !isMinimized) {
       setTimeout(() => inputRef.current?.focus(), 300);
+      setShowPromptBadge(false);
     }
   }, [isOpen, isMinimized]);
 
-  const sendMessage = useCallback((text: string) => {
-    if (!text.trim()) return;
-    setMessages(prev => [...prev, { role: 'user', content: text.trim(), timestamp: new Date() }]);
-    setInput('');
-    setIsTyping(true);
-    setTimeout(() => {
-      setIsTyping(false);
-      setMessages(prev => [...prev, {
-        role: 'ai',
-        content: getReply(text.trim()),
-        timestamp: new Date(),
-      }]);
-    }, 600 + Math.random() * 300);
+  const sendMessage = useCallback(
+    async (text: string) => {
+      if (!text.trim()) return;
+      const userText = text.trim();
+
+      setMessages(prev => [...prev, { role: 'user', content: userText, timestamp: new Date() }]);
+      setInput('');
+      setIsTyping(true);
+
+      if (soundEnabled) playCyberChime('send');
+
+      // Attempt to query backend /api/chat with resilient timeout
+      let reply = '';
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+        const recentHistory = messages
+          .filter(m => m.role === 'user' || m.role === 'ai')
+          .slice(-6)
+          .map(m => ({
+            role: m.role === 'user' ? 'user' : 'model',
+            text: m.content,
+          }));
+
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText, history: recentHistory }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.response) {
+            reply = data.response;
+          }
+        }
+      } catch {
+        // Fallback to local intelligent Saha knowledge base
+      }
+
+      if (!reply) {
+        reply = getReply(userText);
+      }
+
+      setTimeout(() => {
+        setIsTyping(false);
+        setMessages(prev => [...prev, { role: 'ai', content: reply, timestamp: new Date() }]);
+        if (soundEnabled) playCyberChime('receive');
+      }, 350 + Math.random() * 200);
+    },
+    [soundEnabled, messages]
+  );
+
+  useEffect(() => {
+    const handleToggle = () => {
+      setIsOpen(prev => !prev);
+      setIsMinimized(false);
+    };
+    const handleOpen = () => {
+      setIsOpen(true);
+      setIsMinimized(false);
+    };
+    window.addEventListener('toggle-saha-ai', handleToggle);
+    window.addEventListener('open-saha-ai', handleOpen);
+    return () => {
+      window.removeEventListener('toggle-saha-ai', handleToggle);
+      window.removeEventListener('open-saha-ai', handleOpen);
+    };
   }, []);
 
   const handleSend = (e: React.FormEvent) => {
@@ -234,108 +282,129 @@ export default function AIAvatar() {
     sendMessage(input);
   };
 
-  const handleOpen = () => {
-    setIsOpen(true);
-    setIsMinimized(false);
-  };
-
-  /* Prevent scroll from bleeding into the page */
-  const handleWheel = (e: React.WheelEvent) => {
-    const el = messagesContainerRef.current;
-    if (!el) return;
-    const { scrollTop, scrollHeight, clientHeight } = el;
-    const atTop = scrollTop === 0 && e.deltaY < 0;
-    const atBottom = scrollTop + clientHeight >= scrollHeight && e.deltaY > 0;
-    if (!atTop && !atBottom) e.stopPropagation();
+  const clearChat = () => {
+    setMessages([
+      {
+        role: 'ai',
+        content: "Memory buffer refreshed. What would you like to explore next?",
+        timestamp: new Date(),
+      },
+    ]);
   };
 
   return (
     <>
-      {/* Chat Panel */}
+      {/* ── Chat Modal Drawer ── */}
       <AnimatePresence>
         {isOpen && !isMinimized && (
           <motion.div
-            initial={{ opacity: 0, x: 60, scale: 0.94 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 60, scale: 0.94 }}
-            transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-            className="fixed right-[104px] bottom-4 w-[360px] max-w-[calc(100vw-120px)] z-50 flex flex-col"
-            style={{
-              height: 'min(520px, calc(100vh - 80px))',
-              background: 'rgba(5,8,22,0.96)',
-              backdropFilter: 'blur(24px)',
-              border: '1px solid rgba(0,212,255,0.25)',
-              borderRadius: '16px',
-              boxShadow: '0 8px 48px rgba(0,212,255,0.15), inset 0 1px 0 rgba(0,212,255,0.1)',
-            }}
+            ref={modalRef}
+            id="saha-ai-modal"
+            data-saha-chat="true"
+            onWheel={(e) => e.stopPropagation()}
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 300 }}
+            className="allow-scroll saha-chatbox fixed z-50 flex flex-col overflow-hidden inset-x-3 top-18 sm:top-20 sm:inset-x-auto sm:right-6 sm:w-[400px] h-[520px] sm:h-[580px] max-h-[calc(100vh-100px)] rounded-2xl border border-sky-400/40 bg-[#060b18]/95 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_30px_rgba(56,189,248,0.25)]"
           >
+            {/* Cyber Scanline Overlay */}
+            <div className="absolute inset-0 pointer-events-none opacity-10 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,212,255,0.1)_2px,rgba(0,212,255,0.1)_3px)]" />
+
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[rgba(0,212,255,0.15)] flex-shrink-0"
-              style={{ background: 'rgba(0,212,255,0.05)' }}>
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[#00d4ff]/20 bg-[#00d4ff]/5 relative z-10">
               <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  <SAHAFace isActive={true} isHovered={false} size="sm" />
+                {/* SAHA Holographic Pixel Portrait */}
+                <div className="relative">
+                  <SAHAPortrait size="md" isHovered={true} />
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#060b18] flex items-center justify-center">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  </span>
                 </div>
+
                 <div>
-                  <div className="font-mono font-bold text-white text-sm tracking-wider">SAHA</div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] shadow-[0_0_4px_#00d4ff]"
-                      style={{ animation: 'pulse 2s ease-in-out infinite' }} />
-                    <span className="text-[10px] text-[#00d4ff] font-mono tracking-widest">ONLINE</span>
+                  <div className="font-mono font-bold text-white text-xs tracking-wider flex items-center gap-1.5 flex-wrap">
+                    <span>SAHA AI</span>
+                    <span className="text-[8px] font-mono px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-400/35 flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+                      ONLINE
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[9px] font-mono text-sky-400">
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shadow-[0_0_4px_#00d4ff]" />
+                    <span>AI ASSISTANT // HARISH'S PORTFOLIO</span>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+
+              {/* Window Controls */}
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <button
+                  onClick={() => setSoundEnabled(s => !s)}
+                  className="p-1.5 hover:text-[#00d4ff] transition-colors rounded cursor-pointer"
+                  title={soundEnabled ? 'Mute sound effects' : 'Enable sound effects'}
+                  data-interactive="true"
+                >
+                  {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+                </button>
+
+                <button
+                  onClick={clearChat}
+                  className="p-1.5 hover:text-[#00d4ff] transition-colors rounded cursor-pointer"
+                  title="Clear conversation"
+                  data-interactive="true"
+                >
+                  <RotateCcw size={14} />
+                </button>
+
                 <button
                   onClick={() => setIsMinimized(true)}
-                  className="p-1.5 text-white/40 hover:text-white/80 transition-colors rounded"
-                  data-interactive="true"
+                  className="p-1.5 hover:text-white transition-colors rounded cursor-pointer"
                   title="Minimize"
+                  data-interactive="true"
                 >
                   <Minus size={15} />
                 </button>
+
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-1.5 text-white/40 hover:text-red-400 transition-colors rounded"
-                  data-interactive="true"
+                  className="p-1.5 hover:text-red-400 transition-colors rounded cursor-pointer"
                   title="Close"
+                  data-interactive="true"
                 >
                   <X size={15} />
                 </button>
               </div>
             </div>
 
-            {/* Messages — isolated scroll container */}
+            {/* Messages Scroll Area */}
             <div
               ref={messagesContainerRef}
-              onWheel={handleWheel}
-              onTouchMove={e => e.stopPropagation()}
-              className="flex-1 overflow-y-auto px-4 py-3 space-y-3 text-sm overscroll-contain"
+              data-saha-chat="true"
+              onWheel={(e) => e.stopPropagation()}
+              className="allow-scroll flex-1 overflow-y-auto px-4 py-3 space-y-3.5 text-sm overscroll-contain relative z-10"
               style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(0,212,255,0.2) transparent' }}
             >
               {messages.map((msg, idx) => (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, y: 8 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.22 }}
+                  transition={{ duration: 0.2 }}
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} items-end gap-2`}
                 >
                   {msg.role === 'ai' && (
-                    <div className="flex-shrink-0 mb-0.5">
-                      <SAHAFace isActive={true} isHovered={false} size="sm" />
+                    <div className="shrink-0 mb-0.5">
+                      <SAHAPortrait size="sm" />
                     </div>
                   )}
+
                   <div
-                    className={`max-w-[82%] px-3 py-2.5 rounded-xl leading-relaxed text-[13px] ${
+                    className={`max-w-[85%] px-3.5 py-2.5 rounded-lg leading-relaxed text-xs sm:text-[13px] ${
                       msg.role === 'user'
-                        ? 'text-white rounded-br-sm'
-                        : 'text-white/90 rounded-bl-sm border border-[rgba(0,212,255,0.15)]'
+                        ? 'text-white rounded-br-none bg-gradient-to-r from-[#0066ff] to-[#7c3aed] shadow-[0_0_15px_rgba(0,102,255,0.3)]'
+                        : 'text-white/95 rounded-bl-none border border-[#00d4ff]/25 bg-[#00d4ff]/10 shadow-[0_0_15px_rgba(0,212,255,0.06)]'
                     }`}
-                    style={msg.role === 'user'
-                      ? { background: 'linear-gradient(135deg, #0066ff, #7c3aed)' }
-                      : { background: 'rgba(0,212,255,0.07)' }
-                    }
                   >
                     {msg.content}
                   </div>
@@ -349,15 +418,17 @@ export default function AIAvatar() {
                   animate={{ opacity: 1, y: 0 }}
                   className="flex items-end gap-2"
                 >
-                  <div className="flex-shrink-0">
-                    <SAHAFace isActive={true} isHovered={false} size="sm" />
+                  <div className="shrink-0">
+                    <SAHAPortrait size="sm" />
                   </div>
-                  <div className="px-3 py-2.5 rounded-xl rounded-bl-sm border border-[rgba(0,212,255,0.15)]"
-                    style={{ background: 'rgba(0,212,255,0.07)' }}>
-                    <div className="flex items-center gap-1">
+                  <div className="px-3.5 py-2.5 rounded-lg rounded-bl-none border border-[#00d4ff]/25 bg-[#00d4ff]/10">
+                    <div className="flex items-center gap-1.5">
                       {[0, 1, 2].map(i => (
-                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#00d4ff]"
-                          style={{ animation: `bounce 1.2s ease-in-out ${i * 0.2}s infinite` }} />
+                        <div
+                          key={i}
+                          className="w-1.5 h-1.5 rounded-full bg-[#00d4ff] animate-pulse"
+                          style={{ animationDelay: `${i * 150}ms` }}
+                        />
                       ))}
                     </div>
                   </div>
@@ -366,41 +437,52 @@ export default function AIAvatar() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick prompts */}
-            <div className="px-4 py-2 flex gap-2 flex-wrap border-t border-[rgba(0,212,255,0.1)] flex-shrink-0">
-              {['Skills', 'Projects', 'Experience', 'About'].map(prompt => (
+            {/* Quick Prompt Chips */}
+            <div
+              data-saha-chat="true"
+              onWheel={(e) => e.stopPropagation()}
+              className="allow-scroll px-3 py-2 flex gap-1.5 overflow-x-auto border-t border-[#00d4ff]/15 bg-[#050816]/90 no-scrollbar relative z-10 shrink-0"
+            >
+              {[
+                { label: '⚡ Tech Stack', prompt: 'Tell me about Harish Sabari tech stack and programming skills' },
+                { label: '🚀 AI Projects', prompt: 'What are his top machine learning and computer vision projects?' },
+                { label: '💼 Experience', prompt: 'Tell me about his ServiceNow internship and freelance experience' },
+                { label: '📜 Certifications', prompt: 'What Oracle certifications does Harish hold?' },
+                { label: '✉️ Contact', prompt: 'How can I contact or hire Harish Sabari?' },
+              ].map(chip => (
                 <button
-                  key={prompt}
-                  onClick={() => sendMessage(prompt)}
-                  className="text-[10px] font-mono px-2.5 py-1 rounded-full border border-[rgba(0,212,255,0.25)] text-[#00d4ff]/70 hover:text-[#00d4ff] hover:border-[rgba(0,212,255,0.6)] hover:bg-[rgba(0,212,255,0.06)] transition-all"
+                  key={chip.label}
+                  onClick={() => sendMessage(chip.prompt)}
+                  className="text-[10px] font-mono px-2.5 py-1 whitespace-nowrap rounded-sm border border-[#00d4ff]/25 text-[#00d4ff] bg-[#00d4ff]/5 hover:bg-[#00d4ff]/15 hover:border-[#00d4ff]/60 transition-all cursor-pointer"
                   data-interactive="true"
                 >
-                  {prompt}
+                  {chip.label}
                 </button>
               ))}
             </div>
 
-            {/* Input */}
-            <div className="px-4 py-3 border-t border-[rgba(0,212,255,0.15)] flex-shrink-0"
-              style={{ background: 'rgba(0,212,255,0.03)' }}>
-              <form onSubmit={handleSend} className="flex gap-2">
+            {/* Input Form */}
+            <div
+              data-saha-chat="true"
+              onWheel={(e) => e.stopPropagation()}
+              className="px-3 py-2.5 border-t border-[#00d4ff]/20 bg-[#00d4ff]/5 relative z-10 shrink-0"
+            >
+              <form onSubmit={handleSend} className="flex items-center gap-2">
                 <input
                   ref={inputRef}
                   type="text"
                   value={input}
                   onChange={e => setInput(e.target.value)}
-                  placeholder="Ask Saha anything..."
-                  className="flex-1 bg-[rgba(0,212,255,0.06)] border border-[rgba(0,212,255,0.2)] focus:border-[rgba(0,212,255,0.6)] focus:outline-none px-3 py-2 rounded-lg text-white placeholder-white/30 text-sm transition-all"
-                  style={{ fontFamily: 'Space Grotesk, sans-serif' }}
+                  placeholder="Ask Saha about Harish's skills, projects..."
+                  className="flex-1 bg-[#00d4ff]/10 border border-[#00d4ff]/25 focus:border-[#00d4ff] focus:outline-none px-3 py-2 rounded-sm text-white placeholder-white/35 text-xs transition-all font-sans"
                 />
                 <button
                   type="submit"
                   disabled={!input.trim()}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center transition-all disabled:opacity-30"
-                  style={{ background: 'linear-gradient(135deg, #00d4ff, #0066ff)' }}
+                  className="w-8 h-8 rounded-sm flex items-center justify-center transition-all disabled:opacity-30 cursor-pointer bg-gradient-to-r from-[#00d4ff] to-[#0066ff] text-[#050816] font-bold shadow-[0_0_10px_#00d4ff]"
                   data-interactive="true"
                 >
-                  <Send size={15} color="white" />
+                  <Send size={13} />
                 </button>
               </form>
             </div>
@@ -408,74 +490,25 @@ export default function AIAvatar() {
         )}
       </AnimatePresence>
 
-      {/* Minimized bar */}
+      {/* ── Minimized Pill (Top-Right Dock) ── */}
       <AnimatePresence>
         {isOpen && isMinimized && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed right-[104px] bottom-4 z-50 flex items-center gap-3 px-4 py-2.5 rounded-full cursor-pointer"
-            style={{
-              background: 'rgba(5,8,22,0.92)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(0,212,255,0.3)',
-              boxShadow: '0 4px 24px rgba(0,212,255,0.15)',
-            }}
+            exit={{ opacity: 0, y: -10 }}
             onClick={() => setIsMinimized(false)}
+            className="fixed right-4 sm:right-6 top-18 sm:top-20 z-50 flex items-center gap-2 px-3 py-1.5 rounded-full cursor-pointer bg-slate-900/90 border border-sky-400/50 backdrop-blur-xl shadow-[0_0_20px_rgba(56,189,248,0.25)] select-none group"
             data-interactive="true"
           >
-            <div className="flex-shrink-0"><SAHAFace isActive={true} isHovered={false} size="sm" /></div>
-            <span className="text-xs font-mono text-[#00d4ff] tracking-wider">SAHA</span>
-            <ChevronDown size={12} className="text-[#00d4ff]" />
+            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <span className="text-[10px] font-mono text-sky-300 tracking-wider font-bold">
+              SAHA AI [EXPAND]
+            </span>
+            <ChevronDown size={13} className="text-sky-400 group-hover:translate-y-0.5 transition-transform" />
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* SAHA Avatar Button — always visible */}
-      <motion.div
-        className="fixed right-4 bottom-4 z-50 flex flex-col items-center cursor-pointer select-none"
-        onClick={isOpen ? () => setIsOpen(false) : handleOpen}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
-        animate={{ y: [0, -4, 0] }}
-        transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-        data-interactive="true"
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div
-            animate={{ scale: [1, 1.15], opacity: [0.4, 0] }}
-            transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut' }}
-            className="absolute w-20 h-20 rounded-full border border-[#00d4ff]"
-          />
-          <motion.div
-            animate={{ scale: [1, 1.25], opacity: [0.3, 0] }}
-            transition={{ repeat: Infinity, duration: 2.5, delay: 0.8, ease: 'easeOut' }}
-            className="absolute w-20 h-20 rounded-full border border-[#bd93f9]"
-          />
-        </div>
-        <div
-          className="relative w-[72px] h-[86px] transition-all duration-300"
-          style={{
-            filter: isHovered
-              ? 'drop-shadow(0 0 16px rgba(0,212,255,0.7))'
-              : 'drop-shadow(0 0 8px rgba(0,212,255,0.4))',
-            transform: isHovered ? 'scale(1.07)' : 'scale(1)',
-          }}
-        >
-          <SAHAFace isActive={true} isHovered={isHovered} />
-        </div>
-        <div className="mt-1 flex flex-col items-center">
-          <span className="text-[9px] font-mono font-bold tracking-[0.2em]"
-            style={{ color: '#00d4ff', textShadow: '0 0 8px #00d4ff' }}>
-            SAHA
-          </span>
-          <span className="text-[7px] font-mono tracking-wider"
-            style={{ color: 'rgba(0,212,255,0.5)' }}>
-            {isOpen ? '[ CLOSE ]' : '[ TALK ]'}
-          </span>
-        </div>
-      </motion.div>
     </>
   );
 }

@@ -11,6 +11,12 @@ out-tsc
 # dependencies
 node_modules
 
+# environment variables & secrets (CRITICAL: never commit API keys)
+.env
+.env.local
+.env.*.local
+*.env
+
 # IDEs and editors
 /.idea
 .project

@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Root Test",
+    "email": "root@domain.com",
+    "message": "This should be saved to workspace root messages.json.",
+    "timestamp": "2026-06-12T08:54:05.573Z"
+  },
+  {
+    "name": "Harish",
+    "email": "harish23alr@gmail.com",
+    "message": "Checking",
+    "timestamp": "2026-06-12T08:57:30.718Z"
+  },
+  {
+    "name": "Nodemailer Test",
+    "email": "test@domain.com",
+    "message": "Verify fallback logging.",
+    "timestamp": "2026-06-12T09:09:54.066Z"
+  },
+  {
+    "name": "App Password Test",
+    "email": "harish23alr@gmail.com",
+    "message": "Verify Nodemailer delivery is successful.",
+    "timestamp": "2026-06-12T09:14:00.211Z"
+  },
+  {
+    "name": "Browser Test User",
+    "email": "harish23alr@gmail.com",
+    "message": "This is a browser verification test for your portfolio email notifications using the App Password.",
+    "timestamp": "2026-06-12T09:17:51.029Z"
+  },
+  {
+    "name": "Harish",
+    "email": "pvhsabari@gmail.com",
+    "message": "Checking",
+    "timestamp": "2026-06-12T09:21:47.292Z"
+  },
+  {
+    "name": "Harish",
+    "email": "pvhsabari@gmail.com",
+    "message": "Testing",
+    "timestamp": "2026-06-13T05:57:31.224Z"
+  },
+  {
+    "name": "Harish",
+    "email": "pvhsabari@gmail.com",
+    "message": "Message transmit mail checking",
+    "timestamp": "2026-06-13T05:59:15.710Z"
+  }
+]

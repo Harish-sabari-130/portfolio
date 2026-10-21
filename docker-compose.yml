@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: harish-portfolio-monorepo:latest
+    container_name: portfolio-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: harish-portfolio-monorepo:latest
+    container_name: portfolio-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - PORT=5173
+      - BASE_PATH=/
+      - NODE_ENV=production
+      - VITE_API_URL=http://localhost:5000
+    command: pnpm --filter @workspace/harish-portfolio run serve
+    restart: always
+    depends_on:
+      - backend

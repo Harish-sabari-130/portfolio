@@ -14,8 +14,8 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
   ];
 
   useEffect(() => {
-    const duration = 3500;
-    const interval = 50;
+    const duration = 1800;
+    const interval = 40;
     const steps = duration / interval;
     let currentStep = 0;
 
@@ -25,13 +25,13 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
       
       if (currentStep >= steps) {
         clearInterval(timer);
-        setTimeout(onComplete, 500);
+        setTimeout(onComplete, 350);
       }
     }, interval);
 
     const textTimer = setInterval(() => {
       setTextIndex((prev) => Math.min(prev + 1, texts.length - 1));
-    }, 700);
+    }, 380);
 
     return () => {
       clearInterval(timer);

@@ -1,0 +1,14 @@
+{
+  "buildCommand": "pnpm --filter @workspace/harish-portfolio run build",
+  "outputDirectory": "artifacts/harish-portfolio/dist/public",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
