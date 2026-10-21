@@ -1,4 +1,4 @@
-export default async function handler(req: any, res: any) {
+export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -6,19 +6,46 @@ export default async function handler(req: any, res: any) {
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
+    res.status ? res.status(200).end() : (res.statusCode = 200, res.end());
     return;
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    if (res.status) {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ error: 'Method not allowed' }));
   }
 
   try {
-    const { name, email, message } = req.body || {};
+    let body = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch {}
+    } else if (!body) {
+      let bodyStr = '';
+      for await (const chunk of req) {
+        bodyStr += chunk;
+      }
+      try {
+        body = JSON.parse(bodyStr || '{}');
+      } catch {
+        body = {};
+      }
+    }
+
+    const { name, email, message } = body || {};
 
     if (!name || !email || !message) {
-      return res.status(400).json({ error: 'Name, email, and message are required' });
+      if (res.status) {
+        return res.status(400).json({ error: 'Name, email, and message are required' });
+      }
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify({ error: 'Name, email, and message are required' }));
     }
 
     // 1. Dispatch alert via Resend REST API (if RESEND_API_KEY is configured in Vercel)
@@ -79,12 +106,24 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    return res.status(200).json({
+    const payload = {
       success: true,
       message: 'Transmission received successfully. Harish Sabari will follow up with you shortly.',
       timestamp: new Date().toISOString()
-    });
+    };
+
+    if (res.status) {
+      return res.status(200).json(payload);
+    }
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify(payload));
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to process transmission' });
+    if (res.status) {
+      return res.status(500).json({ error: 'Failed to process transmission' });
+    }
+    res.statusCode = 500;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ error: 'Failed to process transmission' }));
   }
 }
