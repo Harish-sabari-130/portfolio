@@ -373,23 +373,19 @@ export default function InfiniteZoomPortfolio() {
         {/* Brand identity */}
         <div
           onClick={() => zoomTo(0)}
-          className="flex items-center gap-3 cursor-pointer group"
+          className="flex items-center gap-2.5 cursor-pointer group"
           title="Harish Sabari's AI Nexus — Return to Core Origin"
           data-interactive="true"
         >
-          <div className="w-9 h-9 rounded-full overflow-hidden border border-amber-400/60 shadow-[0_0_14px_rgba(212,175,55,0.45)] group-hover:scale-105 transition-transform shrink-0">
-            <img
-              src="/hs-emblem.png"
-              alt="Harish Sabari HS Emblem"
-              className="w-full h-full object-cover"
-            />
+          <div className="w-8 h-8 rounded-full border border-[#00d4ff] flex items-center justify-center bg-[#071326] shadow-[0_0_12px_#00d4ff] shrink-0">
+            <div className="w-2 h-2 rounded-full bg-[#00d4ff] animate-ping" />
           </div>
           <div>
-            <div className="font-mono text-xs sm:text-sm font-bold tracking-[0.18em] text-slate-100 group-hover:text-amber-200 transition-all">
-              HARISH SABARI<span className="text-amber-400 font-serif">'S</span>
+            <div className="font-mono text-xs sm:text-sm font-bold tracking-[0.18em] text-[#00d4ff] group-hover:drop-shadow-[0_0_8px_#00d4ff] transition-all">
+              HARISH SABARI<span className="text-white/90">'S</span>
             </div>
-            <div className="font-mono text-[9px] tracking-widest text-sky-400/90 group-hover:text-sky-300">
-              AI NEXUS // HYPERDRIVE
+            <div className="font-mono text-[9px] tracking-widest text-[#bd93f9]/80 hidden sm:block">
+              AI NEXUS // v4.0
             </div>
           </div>
         </div>
